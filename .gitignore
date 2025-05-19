@@ -1,0 +1,27 @@
+# Python byte-compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtuella miljöer
+venv/
+env/
+.venv/
+.env/
+
+# Konfigurationsfiler (exempelvis din bot-token)
+config.py
+config.json
+.env
+
+# Loggfiler
+*.log
+
+# IDE/editor-mappar och filer
+.vscode/
+.idea/
+*.swo
+*.swp
+
+# Mac-OS filer
+.DS_Store
