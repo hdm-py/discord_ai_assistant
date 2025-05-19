@@ -13,6 +13,62 @@
         "keywords": ["betyg", "vg", "g", "examination", "betygskriterier"],
         "question": "Vad krävs för VG respektive G?",
         "answer": "**G:** Grundläggande kännedom om ML-begrepp, arbeta med handledning, redogöra för bias/varians/overfit etc.\n**VG:** Självständighet, säkerhet, analys av samhällsaspekter, kritisk reflektion över ML/AI."
+      },
+      {
+        "id": 3,
+        "category": "kurs-info",
+        "keywords": ["presentation", "redovisning", "demo", "15-20", "minuter", "projektpresentation"],
+        "question": "Hur lång ska projektpresentationen vara?",
+        "answer": "Projektpresentationen ska vara ca 15-20 minuter. Projektet bedöms endast IG/G (inte VG) och deadline är 24 maj 22:00. Bättre att göra mindre projekt som blir klart än halvfärdigt."
+      },
+      {
+        "id": 4,
+        "category": "kurs-info",
+        "keywords": ["lektioner", "schema", "l1", "l2", "l3", "l4", "l5"],
+        "question": "Vilka lektioner ingår i kursen?",
+        "answer": "**L1:** Intro, målsättning, planering\n**L2:** Matriser, 3D-gaming, Perceptroner\n**L3:** Calculus, Backprop\n**L4:** Assignment-1, Convolution, CNN\n**L5:** Transformers & LLM"
+      },
+      {
+        "id": 5,
+        "category": "verktyg",
+        "keywords": ["cursor", "cursor.com", "ai-kod", "kodeditor"],
+        "question": "Vad är Cursor och varför ska jag använda det?",
+        "answer": "Cursor är en AI-driven kodeditor som hjälper med programmering. Kostar ca $20/mån!"
+      },
+      {
+        "id": 6,
+        "category": "verktyg",
+        "keywords": ["colab", "google colab", "gpu", "notebooks"],
+        "question": "Vad är Google Colab?",
+        "answer": "Google Colab är en molnbaserad notebook-miljö med gratis GPU-tillgång. Rekommenderat att köpa billigaste abonnemanget. Samma regel som Cursor - 'slut på GPU-timmar' är inte giltigt skäl för förseningar."
+      },
+      {
+        "id": 7,
+        "category": "ai-grundbegrepp",
+        "keywords": ["llm", "language model", "språkmodell", "transformers"],
+        "question": "Vad är LLM och Transformers?",
+        "answer": "LLM = Large Language Model (GPT, Claude, etc). Baseras på Transformer-arkitekturen från 2017 ('Attention is All You Need'). Revolutionerade AI genom attention-mekanismen."
+      },
+      {
+        "id": 8,
+        "category": "ai-grundbegrepp",
+        "keywords": ["rag", "retrieval augmented generation"],
+        "question": "Vad är RAG?",
+        "answer": "RAG = Retrieval Augmented Generation. Kombinerar LLM med kunskapsdatabas för mer faktabaserade svar. Populär projektidé för kursen!"
+      },
+      {
+        "id": 9,
+        "category": "ai-grundbegrepp",
+        "keywords": ["cnn", "convolution", "convolutional neural networks"],
+        "question": "Vad är CNN?",
+        "answer": "CNN = Convolutional Neural Networks. Används för datorseende. Baserat på visual cortex - receptive fields, feature detection. Behandlas i L4 med convolution kernels och max-pooling."
+      },
+      {
+        "id": 10,
+        "category": "ai-grundbegrepp",
+        "keywords": ["backprop", "backpropagation", "gradient", "adam"],
+        "question": "Vad är backpropagation?",
+        "answer": "Backpropagation är algoritmen som tränar neurala nätverk. Använder gradienter för att uppdatera vikter. Adam-optimering använder momentum-termer för bättre träning."
       }
     ]
   }
