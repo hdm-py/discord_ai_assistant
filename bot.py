@@ -59,7 +59,6 @@ def search_faq(query, faq_data):
     return None
 
 # AI-assisterad sökning med Ollama
-# AI-assisterad sökning med Ollama - FÖRBÄTTRAD VERSION
 async def ai_search_faq(query, faq_data):
     try:
         # Skapa kontext med alla FAQ-frågor
@@ -81,8 +80,6 @@ VIKTIGA REGLER:
 3. Om användaren frågar "vad är machine learning" - leta efter frågor som SPECIFIKT handlar om machine learning/ML
 4. Om användaren frågar "vad är CNN" - leta efter frågor specifikt om CNN
 5. Var mycket selektiv - hellre svara "0" än matcha fel fråga
-
-Användarens fråga: "{query}"
 
 Vilket FAQ-ID passar EXAKT för denna fråga? Svara med numret eller 0:"""
 
@@ -111,7 +108,7 @@ Vilket FAQ-ID passar EXAKT för denna fråga? Svara med numret eller 0:"""
         print(f"Ollama AI-sökning misslyckades: {e}")
         return None, False
 
-# Generera AI-svar för frågor utanför FAQ
+# Generera AI-svar för frågor utanför FAQ - STRIKT KURS-FOKUS
 async def generate_ai_answer(query, faq_data):
     try:
         # Skapa kunskapskontext från FAQ
@@ -127,7 +124,10 @@ Kursinformation från FAQ:
 
 Studentens fråga: "{query}"
 
-Instruktioner:
+VIKTIGT: Du ska ENDAST svara på frågor relaterade till AI/ML-kursen. Om frågan inte är relaterad till kursen, svara:
+"Den frågan ligger utanför kursens omfattning. Jag hjälper bara med frågor om AI/ML-kursen. Använd !help för att se vad jag kan hjälpa med."
+
+Instruktioner för kurs-relaterade frågor:
 - Svara på svenska
 - Håll svaret kort och relevant (max 200 ord)
 - Om frågan inte kan besvaras med kursinformationen, säg att du inte vet
@@ -179,6 +179,7 @@ async def on_ready():
 Hej! Jag hjälper er med frågor om AI-kursen.
 
 **✨ Nu med AI-stöd via Ollama! ✨**
+*Fokuserad på kurs-relaterade frågor*
 
 **Skriv `!help` för att se alla kommandon!**
 
@@ -210,14 +211,17 @@ async def help_command(ctx):
 
 **✨ AI-förbättringar:**
 - Intelligent matchning av frågor
-- AI-genererade svar för frågor utanför FAQ
+- AI-genererade svar för kurs-relaterade frågor
 - Semantisk förståelse av svenska och engelska
+- Strikt fokus på AI/ML-kursen
 
 **Exempel på frågor:**
 `!fråga cursor`, `!fråga cnn`, `!fråga mario coins`
 `!fråga hur fungerar transformers`, `!fråga vad är skillnaden mellan bias och varians`
 
-Totalt {total_questions} frågor tillgängliga!"""
+Totalt {total_questions} frågor tillgängliga!
+
+*Jag svarar bara på frågor relaterade till AI/ML-kursen.*"""
     await ctx.send(help_text)
 
 # Info kommando
@@ -232,19 +236,24 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 - Kunskapsbas: {len(faq_data['faq'])} frågor och svar
 - AI-motor: Ollama (lokal AI)
 - Utvecklad för: AI-1 kurs 2025
-- Version: 2.0 (med AI-stöd)
+- Version: 2.1 (strikt kurs-fokus)
 
 **Vad kan jag hjälpa till med?**
 - Kursinformation och deadlines
 - AI-begrepp och tekniker  
 - Verktyg som Cursor och Colab
 - Projektidéer och uppgifter
-- Intelligent svar på komplicerade frågor
+- Intelligent svar på kurs-relaterade frågor
 
 **Teknisk fördjupning:**
 - Lokal AI-integration med Ollama
 - Semantisk sökning och matchning
 - Multi-level svarsgenerering
+- Strikt scope-begränsning till kursmaterial
+
+**Begränsningar:**
+- Svarar ENDAST på AI/ML-kurs relaterade frågor
+- Hänvisar andra frågor till lämpliga kanaler
 
 Använd `!help` för att se alla kommandon!"""
     await ctx.send(info_text)
@@ -258,14 +267,14 @@ async def ai_status(ctx):
             prompt="Test connection",
             stream=False
         )
-        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest")
+        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest\n🎯 Konfigurerad för strikt kurs-fokus")
     except Exception as e:
         await ctx.send(f"❌ Ollama AI ej tillgänglig: {e}")
 
 # Hello kommando
 @bot.command(name='hello')
 async def hello(ctx):
-    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖\n✨ Nu förstärkt med lokal AI via Ollama!')
+    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖\n✨ Nu förstärkt med lokal AI via Ollama!\n🎯 Jag hjälper dig med AI/ML-kursen.')
 
 # Deadline kommando
 @bot.command(name='deadline')
@@ -297,7 +306,7 @@ async def betyg(ctx):
             return
     await ctx.send("Betygsinformation ej tillgänglig.")
 
-# Uppdaterat fråge-kommando med AI
+# Uppdaterat fråge-kommando med AI - FIXAD LOGIK
 @bot.command(name='fråga')
 async def ask_question(ctx, *, question):
     # Visa att boten "tänker"
@@ -308,20 +317,7 @@ async def ask_question(ctx, *, question):
     # 1. Försök förbättrad traditionell FAQ-sökning först
     traditional_result = search_faq(question, faq_data)
     
-    # 2. Om ingen match, försök AI-sökning
-    if not traditional_result:
-        ai_result, is_ai_match = await ai_search_faq(question, faq_data)
-        if ai_result:
-            await thinking_msg.edit(content="✅ Hittade svar med AI!")
-            response = f"""**{ai_result['question']}** *(AI-hittad)*
-
-{ai_result['answer']}
-
-*Kategori: {ai_result['category'].replace('-', ' ').title()}*"""
-            await ctx.send(response)
-            return
-    
-    # 3. Om FAQ-match finns, använd den
+    # 2. Om traditionell FAQ-sökning hittade något, använd det direkt
     if traditional_result:
         await thinking_msg.edit(content="✅ Hittade svar i FAQ!")
         response = f"""**{traditional_result['question']}**
@@ -332,7 +328,19 @@ async def ask_question(ctx, *, question):
         await ctx.send(response)
         return
     
-    # 4. Om ingen FAQ-match, generera AI-svar
+    # 3. Om ingen traditionell match, försök AI-sökning
+    ai_result, is_ai_match = await ai_search_faq(question, faq_data)
+    if ai_result:
+        await thinking_msg.edit(content="✅ Hittade svar med AI!")
+        response = f"""**{ai_result['question']}** *(AI-hittad)*
+
+{ai_result['answer']}
+
+*Kategori: {ai_result['category'].replace('-', ' ').title()}*"""
+        await ctx.send(response)
+        return
+    
+    # 4. Om ingen FAQ-match, generera AI-svar (med kurs-fokus)
     await thinking_msg.edit(content="🧠 Genererar AI-svar...")
     ai_answer = await generate_ai_answer(question, faq_data)
     if ai_answer:
