@@ -30,136 +30,45 @@
       },
       {
         "id": 5,
-        "category": "verktyg",
-        "keywords": ["cursor", "cursor.com", "ai-kod", "kodeditor"],
-        "question": "Vad är Cursor och varför ska jag använda det?",
-        "answer": "Cursor är en AI-driven kodeditor som hjälper med programmering. Kostar ca $20/mån!"
+        "category": "matematik",
+        "keywords": ["linjäralgebra", "matriser", "3b1b", "vektorer"],
+        "question": "Vilken matematik behöver jag kunna?",
+        "answer": "Främst linjäralgebra: vektorer, matriser, transformationer. 3Blue1Brown's algebra-serie rekommenderas starkt. Också calculus för backpropagation (derivater, gradienter)."
       },
       {
         "id": 6,
-        "category": "verktyg",
-        "keywords": ["colab", "google colab", "gpu", "notebooks"],
-        "question": "Vad är Google Colab?",
-        "answer": "Google Colab är en molnbaserad notebook-miljö med gratis GPU-tillgång. Rekommenderat att köpa billigaste abonnemanget."
+        "category": "projekt",
+        "keywords": ["projektidé", "exempel", "förslag", "rag", "chatbot"],
+        "question": "Vilka projektidéer föreslås?",
+        "answer": "**Förslag:** RAG-lösning, personal assistent, specialiserad chatbot, Discord-bot, AI-spel, multi-modal app. **Viktigt:** Begränsa scope! MVP är bättre än halvfärdigt projekt."
       },
       {
         "id": 7,
-        "category": "ai-grundbegrepp",
-        "keywords": ["llm", "language model", "språkmodell", "transformers"],
-        "question": "Vad är LLM och Transformers?",
-        "answer": "LLM = Large Language Model (GPT, Claude, etc). Baseras på Transformer-arkitekturen från 2017 ('Attention is All You Need'). Revolutionerade AI genom attention-mekanismen."
+        "category": "kurs-info",
+        "keywords": ["jobb", "framtid", "agi", "bill gates", "ai-jobb", "assignment", "homework", "uppgifter"],
+        "question": "Vilka uppgifter ingår i kursen?",
+        "answer": "**Homework (frivilliga, Mario coins):** HW1-AI hypen (4 coins), HW2-PyTorch intro (5 coins), HW3-Webblösningar (4 coins), HW4-AI-teknik presentation (2 coins)\n**Assignments:** Assignment-1 Perceptron OCR (deadline 4/5), Assignment-2 Multi-agenter (deadline 7/5)\n**VG-uppgift:** Obligatorisk för VG, 3 alternativ (filsortering, OCR, computer vision)\n**Projekt:** IG/G bedömning, deadline 24/5"
       },
       {
         "id": 8,
-        "category": "ai-grundbegrepp",
-        "keywords": ["rag", "retrieval augmented generation"],
-        "question": "Vad är RAG?",
-        "answer": "RAG = Retrieval Augmented Generation. Kombinerar LLM med kunskapsdatabas för mer faktabaserade svar. Populär projektidé för kursen!"
+        "category": "kurs-info",
+        "keywords": ["super mario", "coins", "bonus", "examination"],
+        "question": "Vad är Super Mario coins?",
+        "answer": "Bonuspoäng-system i kursen. Ej obligatoriskt men räknas som bonus vid slutexamination. Exempel: diagnostiskt algoritm-test ger 2 Mario coins."
       },
       {
         "id": 9,
-        "category": "ai-grundbegrepp",
-        "keywords": ["cnn", "convolution", "convolutional neural networks"],
-        "question": "Vad är CNN?",
-        "answer": "CNN = Convolutional Neural Networks. Används för datorseende. Baserat på visual cortex - receptive fields, feature detection. Behandlas i L4 med convolution kernels och max-pooling."
+        "category": "kurs-info",
+        "keywords": ["mario coins", "coins", "bonus", "homework", "frivillig"],
+        "question": "Vad är Mario coins och hur fungerar de?",
+        "answer": "Mario coins är bonuspoäng från frivilliga homework-uppgifter. HW1: upp till 4 coins, HW2: upp till 5 coins, HW3: upp till 4 coins, HW4: upp till 2 coins. Räknas som bonus vid slutexamination."
       },
       {
         "id": 10,
-        "category": "ai-grundbegrepp",
-        "keywords": ["backprop", "backpropagation", "gradient", "adam"],
-        "question": "Vad är backpropagation?",
-        "answer": "Backpropagation är algoritmen som tränar neurala nätverk. Använder gradienter för att uppdatera vikter. Adam-optimering använder momentum-termer för bättre träning."
-      },
-      {
-        "id": 11,
-        "category": "ai-grundbegrepp",
-        "keywords": ["bias", "varians", "overfit", "underfit"],
-        "question": "Förklara bias, varians, overfit och underfit",
-    "answer": "**Bias:** Systematisk avvikelse från sant värde\n**Varians:** Känslighet för träningsdata\n**Overfit:** Modellen memorerar träningsdata\n**Underfit:** Modellen är för enkel för problemet"
-  },
-  {
-    "id": 12,
-    "category": "matematik",
-    "keywords": ["linjäralgebra", "matriser", "3b1b", "vektorer"],
-    "question": "Vilken matematik behöver jag kunna?",
-    "answer": "Främst linjäralgebra: vektorer, matriser, transformationer. 3Blue1Brown's algebra-serie rekommenderas starkt. Också calculus för backpropagation (derivater, gradienter)."
-  },
-  {
-    "id": 13,
-    "category": "projekt",
-    "keywords": ["projektidé", "exempel", "förslag", "rag", "chatbot"],
-    "question": "Vilka projektidéer föreslås?",
-    "answer": "**Förslag:** RAG-lösning, personal assistent, specialiserad chatbot, Discord-bot, AI-spel, multi-modal app. **Viktigt:** Begränsa scope! MVP är bättre än halvfärdigt projekt."
-  },
-  {
-    "id": 14,
-    "category": "projekt",
-    "keywords": ["trello", "jira", "projektuppföljning", "tasks"],
-    "question": "Hur ska jag organisera mitt projekt?",
-    "answer": "Använd Trello (enkelt) eller Jira (avancerat). Bryt ner projektet i tasks, visa progress vid två tillfällen: start och halvtid (2-3 min presentations)."
-  },
-  {
-    "id": 15,
-    "category": "kurs-info",
-    "keywords": ["jobb", "framtid", "agi", "bill gates", "ai-jobb", "assignment", "homework", "uppgifter"],
-    "question": "Vilka uppgifter ingår i kursen?",
-    "answer": "**Homework (frivilliga, Mario coins):** HW1-AI hypen (4 coins), HW2-PyTorch intro (5 coins), HW3-Webblösningar (4 coins), HW4-AI-teknik presentation (2 coins)\n**Assignments:** Assignment-1 Perceptron OCR (deadline 4/5), Assignment-2 Multi-agenter (deadline 7/5)\n**VG-uppgift:** Obligatorisk för VG, 3 alternativ (filsortering, OCR, computer vision)\n**Projekt:** IG/G bedömning, deadline 24/5"
-  },
-  {
-    "id": 16,
-    "category": "teknik",
-    "keywords": ["gpu", "parallellism", "cuda", "hårdvara"],
-    "question": "Varför behövs GPU:er för AI?",
-    "answer": "GPU:er har tusentals kärnor som kan köra parallella beräkningar - perfekt för matrisoperationer i neurala nätverk. Mycket snabbare än CPU för ML/AI-arbete."
-  },
-  {
-    "id": 17,
-    "category": "teknik",
-    "keywords": ["pytorch", "numpy", "tensorer", "framework"],
-    "question": "Vad är PyTorch?",
-    "answer": "PyTorch är ett populärt ML-framework för Python. Skiljer sig från NumPy genom GPU-stöd, automatisk differentiering och dynamiska grafer. Används för att bygga och träna neurala nätverk."
-  },
-  {
-    "id": 18,
-    "category": "kurs-info",
-    "keywords": ["super mario", "coins", "bonus", "examination"],
-    "question": "Vad är Super Mario coins?",
-    "answer": "Bonuspoäng-system i kursen. Ej obligatoriskt men räknas som bonus vid slutexamination. Exempel: diagnostiskt algoritm-test ger 2 Mario coins."
-  },
-  {
-    "id": 19,
-    "category": "etik",
-    "keywords": ["etik", "juridik", "samhälle", "ai-etik"],
-    "question": "Vilka etiska aspekter behandlas?",
-    "answer": "Kursen täcker AI/ML från juridiskt och etiskt perspektiv. För VG krävs självständig analys av samhällsaspekter och etiska dilemman inom AI/ML."
-  },
-  {
-    "id": 20,
-    "category": "community",
-    "keywords": ["discord", "virtual valley", "community", "nätverk"],
-    "question": "Finns det AI-communities att joina?",
-    "answer": "Virtual Valley AI Discord-server startades av före detta AI-studenter. Hjälper hålla sig uppdaterad utan att bli överväldigad av AI-nyheter. invite.virtualvalley.ai"
-  },
-  {
-    "id": 21,
-    "category": "kurs-info",
-    "keywords": ["mario coins", "coins", "bonus", "homework", "frivillig"],
-    "question": "Vad är Mario coins och hur fungerar de?",
-    "answer": "Mario coins är bonuspoäng från frivilliga homework-uppgifter. HW1: upp till 4 coins, HW2: upp till 5 coins, HW3: upp till 4 coins, HW4: upp till 2 coins. Räknas som bonus vid slutexamination."
-  },
-  {
-    "id": 22,
-    "category": "kurs-info", 
-    "keywords": ["vg-uppgift", "väl godkänd", "obligatorisk", "terminal", "ocr", "cursor"],
-    "question": "Vad är VG-uppgiften?",
-    "answer": "Obligatorisk för VG-betyg (deadline 22/5). **3 alternativ:** Alt 1: Terminal-program för filsortering med lokal AI, Alt 2: OCR för AF:s aktivitetsrapport, Alt 3: Computer vision för Cursor via MCP-server."
-  },
-  {
-    "id": 23,
-    "category": "kurs-info",
-    "keywords": ["assignment", "deadline", "inlämning", "jupiter", "notebook"],
-    "question": "När är deadlines för assignments?",
-    "answer": "**Assignment-1 (Perceptron OCR):** 4 maj 22:00\n**Assignment-2 (Multi-agenter):** 7 maj 22:00, redovisning 8/6\n**VG-uppgift:** 22 maj 22:00\n**Projekt:** 24 maj 22:00\nRegler: Jupyter notebooks ska vara exekverbara, inga errors, lämna in både .ipynb och PDF."
-  }
+        "category": "kurs-info",
+        "keywords": ["assignment", "deadline", "inlämning", "jupiter", "notebook"],
+        "question": "När är deadlines för assignments?",
+        "answer": "**Assignment-1 (Perceptron OCR):** 4 maj 22:00\n**Assignment-2 (Multi-agenter):** 7 maj 22:00, redovisning 8/6\n**VG-uppgift:** 22 maj 22:00\n**Projekt:** 24 maj 22:00\nRegler: Jupyter notebooks ska vara exekverbara, inga errors, lämna in både .ipynb och PDF."
+      }
     ]
   }
