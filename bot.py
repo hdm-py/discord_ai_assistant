@@ -13,16 +13,6 @@ def load_faq():
         print("FAQ-fil inte hittad!")
         return {"faq": []}
 
-# Sök i FAQ baserat på nyckelord
-def search_faq(query, faq_data):
-    query = query.lower()
-    
-    for item in faq_data['faq']:
-        for keyword in item['keywords']:
-            if keyword.lower() in query:
-                return item
-    return None
-
 # Skapa bot instans
 intents = discord.Intents.default()
 intents.message_content = True
@@ -33,17 +23,38 @@ bot = commands.Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
 @bot.event
 async def on_ready():
     print(f'{bot.user} är nu online!')
-
-# Fråge-kommando
-@bot.command(name='fråga')
-async def ask_question(ctx, *, question):
-    faq_data = load_faq()
-    answer = search_faq(question, faq_data)
     
-    if answer:
-        await ctx.send(f"**{answer['question']}**\n{answer['answer']}")
-    else:
-        await ctx.send("Ingen matchning hittad. Försök med andra ord.")
+    # Skicka välkomstmeddelande till första kanalen boten kan skriva i
+    for guild in bot.guilds:
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                welcome_message = f"""🤖 **AI Kursassistent är nu online!**
+
+Hej! Jag hjälper er med frågor om AI-kursen.
+
+**Tillgängliga kommandon:**
+- `!hello` - Hälsning
+- `!deadline` - Info om projektdeadline
+
+Låt oss börja! 🚀"""
+                await channel.send(welcome_message)
+                break
+        break
+
+# Hello kommando
+@bot.command(name='hello')
+async def hello(ctx):
+    await ctx.send(f'Hej {ctx.author.mention}! Vad kan jag hjälpa dig med? 🤖')
+
+# Deadline kommando
+@bot.command(name='deadline')
+async def deadline(ctx):
+    faq_data = load_faq()
+    for item in faq_data['faq']:
+        if item['id'] == 1:  # Första frågan är deadline
+            await ctx.send(f"**{item['question']}**\n{item['answer']}")
+            return
+    await ctx.send("Deadline-information ej tillgänglig.")
 
 # Kör bot
 if __name__ == "__main__":
