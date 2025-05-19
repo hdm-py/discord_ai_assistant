@@ -14,17 +14,52 @@ def load_faq():
         print("FAQ-fil inte hittad!")
         return {"faq": []}
 
-# Traditionell FAQ-sökning
+# Förbättrad traditionell FAQ-sökning
 def search_faq(query, faq_data):
-    query = query.lower()
+    query = query.lower().strip()
+    exact_matches = []
+    good_matches = []
+    partial_matches = []
     
     for item in faq_data['faq']:
         for keyword in item['keywords']:
-            if keyword.lower() in query:
-                return item
+            keyword_lower = keyword.lower().strip()
+            
+            # 1. Exakt match (högsta prioritet)
+            if keyword_lower == query:
+                exact_matches.append((item, 3))  # Score: 3
+                break
+            
+            # 2. Keyword innehåller hela query (bra match)
+            elif query in keyword_lower and len(query) >= 3:
+                good_matches.append((item, 2))  # Score: 2
+                break
+            
+            # 3. Query innehåller keyword (sämre - kan ge fel resultat)
+            elif keyword_lower in query and len(keyword_lower) >= 4:
+                # Extra kontroll: undvik korta keywords som "ml", "g", "vg" i långa queries
+                if len(keyword_lower) <= 2 and len(query) > 5:
+                    continue  # Skippa korta keywords i långa queries
+                partial_matches.append((item, 1))  # Score: 1
+                break
+        
+        # Kontrollera även mot frågan själv (för bättre matchning)
+        question_lower = item['question'].lower()
+        if query in question_lower and len(query) >= 4:
+            good_matches.append((item, 2))
+    
+    # Sortera och returnera bästa match
+    all_matches = exact_matches + good_matches + partial_matches
+    
+    if all_matches:
+        # Sortera efter score (högst först)
+        all_matches.sort(key=lambda x: x[1], reverse=True)
+        return all_matches[0][0]  # Returnera FAQ-item med högst score
+    
     return None
 
 # AI-assisterad sökning med Ollama
+# AI-assisterad sökning med Ollama - FÖRBÄTTRAD VERSION
 async def ai_search_faq(query, faq_data):
     try:
         # Skapa kontext med alla FAQ-frågor
@@ -40,12 +75,16 @@ Tillgängliga FAQ-frågor:
 
 Användarens fråga: "{query}"
 
-Analysera användarens fråga och hitta det FAQ-ID som bäst matchar. Svara ENDAST med numret (t.ex. "5") eller "0" om ingen fråga passar bra.
+VIKTIGA REGLER:
+1. Svara ENDAST med FAQ-ID numret (t.ex. "7") eller "0" om ingen passar
+2. Matcha EXAKT vad användaren frågar om, inte bara relaterade ämnen
+3. Om användaren frågar "vad är machine learning" - leta efter frågor som SPECIFIKT handlar om machine learning/ML
+4. Om användaren frågar "vad är CNN" - leta efter frågor specifikt om CNN
+5. Var mycket selektiv - hellre svara "0" än matcha fel fråga
 
-Tänk på:
-- Leta efter liknande begrepp och synonymer
-- Förstå intentionen bakom frågan
-- Svenska och engelska varianter av begrepp"""
+Användarens fråga: "{query}"
+
+Vilket FAQ-ID passar EXAKT för denna fråga? Svara med numret eller 0:"""
 
         response = ollama.generate(
             model='llama3:latest',
@@ -219,7 +258,7 @@ async def ai_status(ctx):
             prompt="Test connection",
             stream=False
         )
-        await ctx.send("✅ Ollama AI fungerar! Model: llama3")
+        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest")
     except Exception as e:
         await ctx.send(f"❌ Ollama AI ej tillgänglig: {e}")
 
@@ -266,7 +305,7 @@ async def ask_question(ctx, *, question):
     
     faq_data = load_faq()
     
-    # 1. Försök traditionell FAQ-sökning först
+    # 1. Försök förbättrad traditionell FAQ-sökning först
     traditional_result = search_faq(question, faq_data)
     
     # 2. Om ingen match, försök AI-sökning
