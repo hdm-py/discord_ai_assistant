@@ -32,27 +32,48 @@ async def on_ready():
 
 Hej! Jag hjälper er med frågor om AI-kursen.
 
-**Tillgängliga kommandon:**
-- `!hello` - Hälsning
-- `!deadline` - Info om projektdeadline
+**Skriv `!help` för att se alla kommandon!**
 
 Låt oss börja! 🚀"""
                 await channel.send(welcome_message)
                 break
         break
 
-# Hello kommando
-@bot.command(name='hello')
-async def hello(ctx):
-    await ctx.send(f'Hej {ctx.author.mention}! Vad kan jag hjälpa dig med? 🤖')
+bot.remove_command('help')
 
-# Deadline kommando
-@bot.command(name='deadline')
+# Help kommando - nu med aliases
+@bot.command(name='help', aliases=['hjälp', 'hjalp'])
+async def help_command(ctx):
+    help_text = """🤖 **AI Kursassistent - Hjälp**
+
+**Tillgängliga kommandon:**
+- `!hello` (eller `!hej`) - Hälsning från boten
+- `!deadline` (eller `!tid`) - Information om projektdeadline  
+- `!help` (eller `!hjälp`) - Visa denna hjälp
+
+**Tips:** Du kan använda de kortare versionerna inom parentes!
+
+Fler kommandon kommer snart!"""
+    await ctx.send(help_text)
+
+# Hello kommando - nu med aliases
+@bot.command(name='hello', aliases=['hej'])
+async def hello(ctx):
+    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖')
+
+# Deadline kommando - nu med aliases
+@bot.command(name='deadline', aliases=['tid'])
 async def deadline(ctx):
     faq_data = load_faq()
     for item in faq_data['faq']:
         if item['id'] == 1:  # Första frågan är deadline
-            await ctx.send(f"**{item['question']}**\n{item['answer']}")
+            # Förbättrat format med kategori
+            response = f"""**{item['question']}**
+
+{item['answer']}
+
+*Kategori: {item['category'].replace('-', ' ').title()}*"""
+            await ctx.send(response)
             return
     await ctx.send("Deadline-information ej tillgänglig.")
 
