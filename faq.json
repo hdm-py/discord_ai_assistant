@@ -1,0 +1,18 @@
+{
+    "faq": [
+      {
+        "id": 1,
+        "category": "kurs-info",
+        "keywords": ["deadline", "inlämning", "när", "datum", "27 maj"],
+        "question": "När är deadline för projektet?",
+        "answer": "Projektdeadline är 27 maj 2025. Presentation sker samma dag eller tidigare. Bättre att göra mindre projekt som blir klart än halvfärdigt vid deadline!"
+      },
+      {
+        "id": 2,
+        "category": "kurs-info", 
+        "keywords": ["betyg", "vg", "g", "examination", "betygskriterier"],
+        "question": "Vad krävs för VG respektive G?",
+        "answer": "**G:** Grundläggande kännedom om ML-begrepp, arbeta med handledning, redogöra för bias/varians/overfit etc.\n**VG:** Självständighet, säkerhet, analys av samhällsaspekter, kritisk reflektion över ML/AI."
+      }
+    ]
+  }
