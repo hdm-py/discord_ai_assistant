@@ -1,12 +1,31 @@
+# bot.py
 import discord
 from discord.ext import commands
 import json
 import config
 
+# Läs FAQ-data
+def load_faq():
+    try:
+        with open('faq.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print("FAQ-fil inte hittad!")
+        return {"faq": []}
+
+# Sök i FAQ baserat på nyckelord
+def search_faq(query, faq_data):
+    query = query.lower()
+    
+    for item in faq_data['faq']:
+        for keyword in item['keywords']:
+            if keyword.lower() in query:
+                return item
+    return None
+
 # Skapa bot instans
 intents = discord.Intents.default()
 intents.message_content = True
-intents.guild_messages = True
 
 bot = commands.Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
 
@@ -14,15 +33,17 @@ bot = commands.Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
 @bot.event
 async def on_ready():
     print(f'{bot.user} är nu online!')
-    await bot.change_presence(activity=discord.Activity(
-        type=discord.ActivityType.watching, 
-        name=config.BOT_STATUS
-    ))
 
-# Hello World kommando för test
-@bot.command(name='hello')
-async def hello(ctx):
-    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖')
+# Fråge-kommando
+@bot.command(name='fråga')
+async def ask_question(ctx, *, question):
+    faq_data = load_faq()
+    answer = search_faq(question, faq_data)
+    
+    if answer:
+        await ctx.send(f"**{answer['question']}**\n{answer['answer']}")
+    else:
+        await ctx.send("Ingen matchning hittad. Försök med andra ord.")
 
 # Kör bot
 if __name__ == "__main__":
