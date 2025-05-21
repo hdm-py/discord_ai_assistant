@@ -219,7 +219,6 @@ async def help_command(ctx):
 
 **Frågor:**
 - Ställ frågor direkt! (t.ex. "Vad är CNN?")
-- `!fråga [din fråga]` - Alternativt prefix
 - `!betyg` - Info om VG/G krav
 
 **✨ AI-förbättringar:**
@@ -249,8 +248,6 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 **Status:**
 - Kunskapsbas: {len(faq_data['faq'])} frågor och svar
 - AI-motor: Ollama (lokal AI)
-- Utvecklad för: AI-1 kurs 2025
-- Version: 3.0 (natural conversations)
 
 **Vad kan jag hjälpa till med?**
 - Kursinformation och deadlines
@@ -262,7 +259,6 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 
 **Teknisk fördjupning:**
 - Lokal AI-integration med Ollama
-- Natural conversations utan kommandon
 - Semantisk sökning och matchning
 - Multi-level svarsgenerering
 - Smart detektering av komplexa frågor
@@ -284,7 +280,7 @@ async def ai_status(ctx):
             prompt="Test connection",
             stream=False
         )
-        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest\n🧠 Naturliga konversationer och smart frågehantering aktiverad")
+        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest")
     except Exception as e:
         await ctx.send(f"❌ Ollama AI ej tillgänglig: {e}")
 
@@ -360,7 +356,7 @@ async def ask_question(ctx, *, question):
         return
     
     # If no FAQ match, generate AI answer (with course focus)
-    await thinking_msg.edit(content="🧠 Genererar intelligent svar...")
+    await thinking_msg.edit(content="🧠 Genererar AI-svar...")
     ai_answer = await generate_ai_answer(question, faq_data)
     if ai_answer:
         await thinking_msg.edit(content="✅ AI-svar genererat!")
