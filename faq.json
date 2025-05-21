@@ -1,74 +1,74 @@
 {
-    "faq": [
-      {
-        "id": 1,
-        "category": "kurs-info",
-        "keywords": ["deadline", "inlämning", "när", "datum", "27 maj"],
-        "question": "När är deadline för projektet?",
-        "answer": "Projektdeadline är 24 maj 2025. Presentation sker 27/5 eller tidigare. Bättre att göra mindre projekt som blir klart än halvfärdigt vid deadline!"
-      },
-      {
-        "id": 2,
-        "category": "kurs-info", 
-        "keywords": ["betyg", "vg", "g", "examination", "betygskriterier"],
-        "question": "Vad krävs för VG respektive G?",
-        "answer": "**G:** Grundläggande kännedom om ML-begrepp, arbeta med handledning, redogöra för bias/varians/overfit etc.\n**VG:** Självständighet, säkerhet, analys av samhällsaspekter, kritisk reflektion över ML/AI."
-      },
-      {
-        "id": 3,
-        "category": "kurs-info",
-        "keywords": ["presentation", "redovisning", "demo", "15-20", "minuter", "projektpresentation"],
-        "question": "Hur lång ska projektpresentationen vara?",
-        "answer": "Projektpresentationen ska vara ca 15-20 minuter. Projektet bedöms endast IG/G och deadline är 24 maj 22:00."
-      },
-      {
-        "id": 4,
-        "category": "kurs-info",
-        "keywords": ["lektioner", "schema", "l1", "l2", "l3", "l4", "l5"],
-        "question": "Vilka lektioner ingår i kursen?",
-        "answer": "**L1:** Intro, målsättning, planering\n**L2:** Matriser, 3D-gaming, Perceptroner\n**L3:** Calculus, Backprop\n**L4:** Assignment-1, Convolution, CNN\n**L5:** Transformers & LLM"
-      },
-      {
-        "id": 5,
-        "category": "matematik",
-        "keywords": ["linjäralgebra", "matriser", "3b1b", "vektorer"],
-        "question": "Vilken matematik behöver jag kunna?",
-        "answer": "Främst linjäralgebra: vektorer, matriser, transformationer. 3Blue1Brown's algebra-serie rekommenderas starkt. Också calculus för backpropagation (derivater, gradienter)."
-      },
-      {
-        "id": 6,
-        "category": "projekt",
-        "keywords": ["projektidé", "exempel", "förslag", "rag", "chatbot"],
-        "question": "Vilka projektidéer föreslås?",
-        "answer": "**Förslag:** RAG-lösning, personal assistent, specialiserad chatbot, Discord-bot, AI-spel, multi-modal app. **Viktigt:** Begränsa scope! MVP är bättre än halvfärdigt projekt."
-      },
-      {
-        "id": 7,
-        "category": "kurs-info",
-        "keywords": ["jobb", "framtid", "agi", "bill gates", "ai-jobb", "assignment", "homework", "uppgifter"],
-        "question": "Vilka uppgifter ingår i kursen?",
-        "answer": "**Homework (frivilliga, Mario coins):** HW1-AI hypen (4 coins), HW2-PyTorch intro (5 coins), HW3-Webblösningar (4 coins), HW4-AI-teknik presentation (2 coins)\n**Assignments:** Assignment-1 Perceptron OCR (deadline 4/5), Assignment-2 Multi-agenter (deadline 7/5)\n**VG-uppgift:** Obligatorisk för VG, 3 alternativ (filsortering, OCR, computer vision)\n**Projekt:** IG/G bedömning, deadline 24/5"
-      },
-      {
-        "id": 8,
-        "category": "kurs-info",
-        "keywords": ["super mario", "coins", "bonus", "examination"],
-        "question": "Vad är Super Mario coins?",
-        "answer": "Bonuspoäng-system i kursen. Ej obligatoriskt men räknas som bonus vid slutexamination. Exempel: diagnostiskt algoritm-test ger 2 Mario coins."
-      },
-      {
-        "id": 9,
-        "category": "kurs-info",
-        "keywords": ["mario coins", "coins", "bonus", "homework", "frivillig"],
-        "question": "Vad är Mario coins och hur fungerar de?",
-        "answer": "Mario coins är bonuspoäng från frivilliga homework-uppgifter. HW1: upp till 4 coins, HW2: upp till 5 coins, HW3: upp till 4 coins, HW4: upp till 2 coins. Räknas som bonus vid slutexamination."
-      },
-      {
-        "id": 10,
-        "category": "kurs-info",
-        "keywords": ["assignment", "deadline", "inlämning", "jupiter", "notebook"],
-        "question": "När är deadlines för assignments?",
-        "answer": "**Assignment-1 (Perceptron OCR):** 4 maj 22:00\n**Assignment-2 (Multi-agenter):** 7 maj 22:00, redovisning 8/6\n**VG-uppgift:** 22 maj 22:00\n**Projekt:** 24 maj 22:00\nRegler: Jupyter notebooks ska vara exekverbara, inga errors, lämna in både .ipynb och PDF."
-      }
-    ]
-  }
+  "faq": [
+    {
+      "id": 1,
+      "category": "kurs-info",
+      "keywords": ["deadline", "inlämning", "när", "datum", "27 maj"],
+      "question": "När är deadline för projektet?",
+      "answer": "Projektdeadline är 24 maj 2025. Presentation sker 27/5 eller tidigare. Bättre att göra mindre projekt som blir klart än halvfärdigt vid deadline!"
+    },
+    {
+      "id": 2,
+      "category": "kurs-info", 
+      "keywords": ["betyg", "vg", "g", "examination", "betygskriterier"],
+      "question": "Vad krävs för VG respektive G?",
+      "answer": "**G:** Grundläggande kännedom om ML-begrepp, arbeta med handledning, redogöra för bias/varians/overfit etc.\n**VG:** Självständighet, säkerhet, analys av samhällsaspekter, kritisk reflektion över ML/AI."
+    },
+    {
+      "id": 3,
+      "category": "kurs-info",
+      "keywords": ["presentation", "redovisning", "demo", "15-20", "minuter", "projektpresentation"],
+      "question": "Hur lång ska projektpresentationen vara?",
+      "answer": "Projektpresentationen ska vara ca 15-20 minuter. Projektet bedöms endast IG/G och deadline är 24 maj 22:00."
+    },
+    {
+      "id": 4,
+      "category": "kurs-info",
+      "keywords": ["lektioner", "schema", "l1", "l2", "l3", "l4", "l5"],
+      "question": "Vilka lektioner ingår i kursen?",
+      "answer": "**L1:** Intro, målsättning, planering\n**L2:** Matriser, 3D-gaming, Perceptroner\n**L3:** Calculus, Backprop\n**L4:** Assignment-1, Convolution, CNN\n**L5:** Transformers & LLM"
+    },
+    {
+      "id": 5,
+      "category": "matematik",
+      "keywords": ["linjäralgebra", "matriser", "3b1b", "vektorer"],
+      "question": "Vilken matematik behöver jag kunna?",
+      "answer": "Främst linjäralgebra: vektorer, matriser, transformationer. 3Blue1Brown's algebra-serie rekommenderas starkt. Också calculus för backpropagation (derivater, gradienter)."
+    },
+    {
+      "id": 6,
+      "category": "projekt",
+      "keywords": ["projektidé", "exempel", "förslag", "projektförslag", "chatbot"],
+      "question": "Vilka projektidéer föreslås?",
+      "answer": "**Förslag:** RAG-lösning, personal assistent, specialiserad chatbot, Discord-bot, AI-spel, multi-modal app. **Viktigt:** Begränsa scope! MVP är bättre än halvfärdigt projekt."
+    },
+    {
+      "id": 7,
+      "category": "kurs-info",
+      "keywords": ["jobb", "framtid", "agi", "bill gates", "ai-jobb", "assignment", "homework", "uppgifter"],
+      "question": "Vilka uppgifter ingår i kursen?",
+      "answer": "**Homework (frivilliga, Mario coins):** HW1-AI hypen (4 coins), HW2-PyTorch intro (5 coins), HW3-Webblösningar (4 coins), HW4-AI-teknik presentation (2 coins)\n**Assignments:** Assignment-1 Perceptron OCR (deadline 4/5), Assignment-2 Multi-agenter (deadline 7/5)\n**VG-uppgift:** Obligatorisk för VG, 3 alternativ (filsortering, OCR, computer vision)\n**Projekt:** IG/G bedömning, deadline 24/5"
+    },
+    {
+      "id": 8,
+      "category": "kurs-info",
+      "keywords": ["super mario", "coins", "bonus", "examination"],
+      "question": "Vad är Super Mario coins?",
+      "answer": "Bonuspoäng-system i kursen. Ej obligatoriskt men räknas som bonus vid slutexamination. Exempel: diagnostiskt algoritm-test ger 2 Mario coins."
+    },
+    {
+      "id": 9,
+      "category": "kurs-info",
+      "keywords": ["mario coins", "coins", "bonus", "homework", "frivillig"],
+      "question": "Vad är Mario coins och hur fungerar de?",
+      "answer": "Mario coins är bonuspoäng från frivilliga homework-uppgifter. HW1: upp till 4 coins, HW2: upp till 5 coins, HW3: upp till 4 coins, HW4: upp till 2 coins. Räknas som bonus vid slutexamination."
+    },
+    {
+      "id": 10,
+      "category": "kurs-info",
+      "keywords": ["assignment", "deadline", "inlämning", "jupiter", "notebook"],
+      "question": "När är deadlines för assignments?",
+      "answer": "**Assignment-1 (Perceptron OCR):** 4 maj 22:00\n**Assignment-2 (Multi-agenter):** 7 maj 22:00, redovisning 8/6\n**VG-uppgift:** 22 maj 22:00\n**Projekt:** 24 maj 22:00\nRegler: Jupyter notebooks ska vara exekverbara, inga errors, lämna in både .ipynb och PDF."
+    }
+  ]
+}
