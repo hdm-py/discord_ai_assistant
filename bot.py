@@ -5,18 +5,30 @@ import config
 import ollama
 import re
 
-# Läs FAQ-data
+# Load FAQ data
 def load_faq():
     try:
         with open('faq.json', 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        print("FAQ-fil inte hittad!")
+        print("FAQ file not found!")
         return {"faq": []}
 
-# Förbättrad traditionell FAQ-sökning
+# IMPROVED traditional FAQ search
 def search_faq(query, faq_data):
     query = query.lower().strip()
+    
+    # Check if it's a complex/comparative question that AI should handle
+    complex_indicators = [
+        'skillnad', 'skillnader', 'mellan', 'jämför', 'jämförelse', 
+        'vs', 'versus', 'kontra', 'mot', 'eller', 'förklara skillnad',
+        'vad är bättre', 'vilken', 'hur skiljer', 'hur fungerar'
+    ]
+    
+    # If the question contains comparative words, let AI handle it
+    if any(indicator in query for indicator in complex_indicators):
+        return None
+    
     exact_matches = []
     good_matches = []
     partial_matches = []
@@ -25,63 +37,63 @@ def search_faq(query, faq_data):
         for keyword in item['keywords']:
             keyword_lower = keyword.lower().strip()
             
-            # 1. Exakt match (högsta prioritet)
+            # 1. Exact match (highest priority)
             if keyword_lower == query:
                 exact_matches.append((item, 3))  # Score: 3
                 break
             
-            # 2. Keyword innehåller hela query (bra match)
-            elif query in keyword_lower and len(query) >= 3:
+            # 2. Query is in keyword (good match)
+            elif query in keyword_lower and len(query) >= 2:
                 good_matches.append((item, 2))  # Score: 2
                 break
             
-            # 3. Query innehåller keyword (sämre - kan ge fel resultat)
-            elif keyword_lower in query and len(keyword_lower) >= 4:
-                # Extra kontroll: undvik korta keywords som "ml", "g", "vg" i långa queries
+            # 3. Keyword is in query (weaker match)
+            elif keyword_lower in query and len(keyword_lower) >= 3:
+                # Extra check: avoid short keywords in long queries
                 if len(keyword_lower) <= 2 and len(query) > 5:
-                    continue  # Skippa korta keywords i långa queries
+                    continue  # Skip short keywords in long queries
                 partial_matches.append((item, 1))  # Score: 1
                 break
         
-        # Kontrollera även mot frågan själv (för bättre matchning)
+        # Also check against the question itself (for better matching)
         question_lower = item['question'].lower()
-        if query in question_lower and len(query) >= 4:
+        if query in question_lower and len(query) >= 3:
             good_matches.append((item, 2))
     
-    # Sortera och returnera bästa match
+    # Sort and return best match
     all_matches = exact_matches + good_matches + partial_matches
     
     if all_matches:
-        # Sortera efter score (högst först)
+        # Sort by score (highest first)
         all_matches.sort(key=lambda x: x[1], reverse=True)
-        return all_matches[0][0]  # Returnera FAQ-item med högst score
+        return all_matches[0][0]  # Return FAQ item with highest score
     
     return None
 
-# AI-assisterad sökning med Ollama
+# AI-assisted search with Ollama
 async def ai_search_faq(query, faq_data):
     try:
-        # Skapa kontext med alla FAQ-frågor
+        # Create context with all FAQ questions
         faq_context = "\n".join([
-            f"ID {item['id']}: {item['question']} (nyckelord: {', '.join(item['keywords'])})"
+            f"ID {item['id']}: {item['question']} (keywords: {', '.join(item['keywords'])})"
             for item in faq_data['faq']
         ])
         
-        prompt = f"""Du är en AI-assistent som hjälper studenter hitta rätt FAQ-fråga.
+        prompt = f"""You are an AI assistant helping students find the right FAQ question.
 
-Tillgängliga FAQ-frågor:
+Available FAQ questions:
 {faq_context}
 
-Användarens fråga: "{query}"
+User's question: "{query}"
 
-VIKTIGA REGLER:
-1. Svara ENDAST med FAQ-ID numret (t.ex. "7") eller "0" om ingen passar
-2. Matcha EXAKT vad användaren frågar om, inte bara relaterade ämnen
-3. Om användaren frågar "vad är machine learning" - leta efter frågor som SPECIFIKT handlar om machine learning/ML
-4. Om användaren frågar "vad är CNN" - leta efter frågor specifikt om CNN
-5. Var mycket selektiv - hellre svara "0" än matcha fel fråga
+IMPORTANT RULES:
+1. Answer ONLY with the FAQ ID number (e.g. "7") or "0" if none matches
+2. Match EXACTLY what the user is asking about, not just related topics
+3. If the user asks "what is machine learning" - look for questions that SPECIFICALLY deal with machine learning/ML
+4. If the user asks "what is CNN" - look for questions specifically about CNN
+5. Be very selective - better to answer "0" than match the wrong question
 
-Vilket FAQ-ID passar EXAKT för denna fråga? Svara med numret eller 0:"""
+Which FAQ ID matches EXACTLY for this question? Answer with the number or 0:"""
 
         response = ollama.generate(
             model='llama3:latest',
@@ -89,10 +101,10 @@ Vilket FAQ-ID passar EXAKT för denna fråga? Svara med numret eller 0:"""
             stream=False
         )
         
-        # Försök extrahera FAQ-ID från svaret
+        # Try to extract FAQ ID from the answer
         ai_response = response['response'].strip()
         
-        # Hitta nummer i svaret
+        # Find numbers in the response
         numbers = re.findall(r'\b\d+\b', ai_response)
         
         if numbers:
@@ -100,41 +112,41 @@ Vilket FAQ-ID passar EXAKT för denna fråga? Svara med numret eller 0:"""
             if faq_id > 0:
                 for item in faq_data['faq']:
                     if item['id'] == faq_id:
-                        return item, True  # True = AI-matchning
+                        return item, True  # True = AI match
         
         return None, False
         
     except Exception as e:
-        print(f"Ollama AI-sökning misslyckades: {e}")
+        print(f"Ollama AI search failed: {e}")
         return None, False
 
-# Generera AI-svar för frågor utanför FAQ - STRIKT KURS-FOKUS
+# Generate AI answer for questions outside FAQ - STRICT COURSE FOCUS
 async def generate_ai_answer(query, faq_data):
     try:
-        # Skapa kunskapskontext från FAQ
+        # Create knowledge context from FAQ
         knowledge_base = "\n".join([
             f"- {item['question']}: {item['answer']}"
             for item in faq_data['faq']
         ])
         
-        prompt = f"""Du är en AI-kursassistent för en AI/ML-kurs. Baserat på kursinformationen nedan, svara på studentens fråga.
+        prompt = f"""You are an AI course assistant for an AI/ML course. Based on the course information below, answer the student's question.
 
-Kursinformation från FAQ:
+Course information from FAQ:
 {knowledge_base}
 
-Studentens fråga: "{query}"
+Student's question: "{query}"
 
-VIKTIGT: Du ska ENDAST svara på frågor relaterade till AI/ML-kursen. Om frågan inte är relaterad till kursen, svara:
+IMPORTANT: You should ONLY answer questions related to the AI/ML course. If the question is not related to the course, answer:
 "Den frågan ligger utanför kursens omfattning. Jag hjälper bara med frågor om AI/ML-kursen. Använd !help för att se vad jag kan hjälpa med."
 
-Instruktioner för kurs-relaterade frågor:
-- Svara på svenska
-- Håll svaret kort och relevant (max 200 ord)
-- Om frågan inte kan besvaras med kursinformationen, säg att du inte vet
-- Referera till relevant kursmaterial när det är lämpligt
-- Var hjälpsam och uppmuntrande
+Instructions for course-related questions:
+- Answer in Swedish
+- Keep the answer short and relevant (max 200 words)
+- If the question cannot be answered with the course information, say you don't know
+- Reference relevant course material when appropriate
+- Be helpful and encouraging
 
-Svar:"""
+Answer:"""
 
         response = ollama.generate(
             model='llama3:latest',
@@ -145,32 +157,32 @@ Svar:"""
         return response['response'].strip()
         
     except Exception as e:
-        print(f"AI-svarsgenerering misslyckades: {e}")
+        print(f"AI answer generation failed: {e}")
         return None
 
-# Skapa bot instans
+# Create bot instance
 intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
 
-# När bot startar
+# When bot starts
 @bot.event
 async def on_ready():
-    print(f'{bot.user} är nu online!')
+    print(f'{bot.user} is now online!')
     
-    # Testa Ollama-anslutning
+    # Test Ollama connection
     try:
         test_response = ollama.generate(
             model='llama3:latest',
             prompt="Test",
             stream=False
         )
-        print("✅ Ollama fungerar!")
+        print("✅ Ollama works!")
     except Exception as e:
-        print(f"❌ Ollama-fel: {e}")
+        print(f"❌ Ollama error: {e}")
     
-    # Skicka välkomstmeddelande till första kanalen boten kan skriva i
+    # Send welcome message to the first channel the bot can write in
     for guild in bot.guilds:
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
@@ -181,7 +193,7 @@ Hej! Jag hjälper er med frågor om AI-kursen.
 **✨ Nu med AI-stöd via Ollama! ✨**
 *Fokuserad på kurs-relaterade frågor*
 
-**Skriv `!help` för att se alla kommandon!**
+**Skriv `!help` för att se alla kommandon eller ställ frågor direkt!**
 
 Låt oss börja! 🚀"""
                 await channel.send(welcome_message)
@@ -190,7 +202,7 @@ Låt oss börja! 🚀"""
 
 bot.remove_command('help')
 
-# Help kommando
+# Help command
 @bot.command(name='help')
 async def help_command(ctx):
     faq_data = load_faq()
@@ -205,8 +217,9 @@ async def help_command(ctx):
 - `!info` - Information om boten
 - `!ai-status` - Kontrollera AI-status
 
-**Frågor från FAQ:**
-- `!fråga [din fråga]` - Ställ frågor om kursen (nu med AI!)
+**Frågor:**
+- Ställ frågor direkt! (t.ex. "Vad är CNN?")
+- `!fråga [din fråga]` - Alternativt prefix
 - `!betyg` - Info om VG/G krav
 
 **✨ AI-förbättringar:**
@@ -214,17 +227,18 @@ async def help_command(ctx):
 - AI-genererade svar för kurs-relaterade frågor
 - Semantisk förståelse av svenska och engelska
 - Strikt fokus på AI/ML-kursen
+- Smart hantering av jämförande frågor
 
 **Exempel på frågor:**
-`!fråga cursor`, `!fråga cnn`, `!fråga mario coins`
-`!fråga hur fungerar transformers`, `!fråga vad är skillnaden mellan bias och varians`
+`Vad är CNN?`, `När är deadline?`, `Vad är PyTorch?`
+`Hur fungerar transformers?`, `Vad är skillnaden mellan bias och varians?`
 
-Totalt {total_questions} frågor tillgängliga!
+Totalt {total_questions} frågor tillgängliga för fakta, AI svarar på allt annat!
 
 *Jag svarar bara på frågor relaterade till AI/ML-kursen.*"""
     await ctx.send(help_text)
 
-# Info kommando
+# Info command
 @bot.command(name='info')
 async def info_command(ctx):
     faq_data = load_faq()
@@ -236,7 +250,7 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 - Kunskapsbas: {len(faq_data['faq'])} frågor och svar
 - AI-motor: Ollama (lokal AI)
 - Utvecklad för: AI-1 kurs 2025
-- Version: 2.1 (strikt kurs-fokus)
+- Version: 3.0 (natural conversations)
 
 **Vad kan jag hjälpa till med?**
 - Kursinformation och deadlines
@@ -244,11 +258,14 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 - Verktyg som Cursor och Colab
 - Projektidéer och uppgifter
 - Intelligent svar på kurs-relaterade frågor
+- Jämförelser mellan olika AI-koncept
 
 **Teknisk fördjupning:**
 - Lokal AI-integration med Ollama
+- Natural conversations utan kommandon
 - Semantisk sökning och matchning
 - Multi-level svarsgenerering
+- Smart detektering av komplexa frågor
 - Strikt scope-begränsning till kursmaterial
 
 **Begränsningar:**
@@ -258,7 +275,7 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 Använd `!help` för att se alla kommandon!"""
     await ctx.send(info_text)
 
-# AI-status kommando
+# AI-status command
 @bot.command(name='ai-status')
 async def ai_status(ctx):
     try:
@@ -267,21 +284,21 @@ async def ai_status(ctx):
             prompt="Test connection",
             stream=False
         )
-        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest\n🎯 Konfigurerad för strikt kurs-fokus")
+        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest\n🧠 Naturliga konversationer och smart frågehantering aktiverad")
     except Exception as e:
         await ctx.send(f"❌ Ollama AI ej tillgänglig: {e}")
 
-# Hello kommando
+# Hello command
 @bot.command(name='hello')
 async def hello(ctx):
-    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖\n✨ Nu förstärkt med lokal AI via Ollama!\n🎯 Jag hjälper dig med AI/ML-kursen.')
+    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖\n✨ Nu förstärkt med lokal AI via Ollama!\n🎯 Jag hjälper dig med AI/ML-kursen.\n💬 Du kan ställa frågor direkt utan kommandon!')
 
-# Deadline kommando
+# Deadline command
 @bot.command(name='deadline')
 async def deadline(ctx):
     faq_data = load_faq()
     for item in faq_data['faq']:
-        if item['id'] == 1:  # Deadline frågan
+        if item['id'] == 1:  # Deadline question
             response = f"""**{item['question']}**
 
 {item['answer']}
@@ -291,12 +308,12 @@ async def deadline(ctx):
             return
     await ctx.send("Deadline-information ej tillgänglig.")
 
-# Betyg kommando
+# Grade command
 @bot.command(name='betyg')
 async def betyg(ctx):
     faq_data = load_faq()
     for item in faq_data['faq']:
-        if item['id'] == 2:  # Betyg frågan
+        if item['id'] == 2:  # Grade question
             response = f"""**{item['question']}**
 
 {item['answer']}
@@ -306,18 +323,19 @@ async def betyg(ctx):
             return
     await ctx.send("Betygsinformation ej tillgänglig.")
 
-# Uppdaterat fråge-kommando med AI - FIXAD LOGIK
+# Updated question command with AI - FIXED LOGIC and COMPLEX QUESTIONS
 @bot.command(name='fråga')
 async def ask_question(ctx, *, question):
-    # Visa att boten "tänker"
-    thinking_msg = await ctx.send("🤔 Tänker... (söker med AI)")
+    # Show that the bot is "thinking"
+    thinking_msg = await ctx.send("🤔 Tänker... (analyserar fråga)")
     
     faq_data = load_faq()
     
-    # 1. Försök förbättrad traditionell FAQ-sökning först
+    # Improved traditional FAQ search first
+    # (Now automatically skips complex/comparative questions)
     traditional_result = search_faq(question, faq_data)
     
-    # 2. Om traditionell FAQ-sökning hittade något, använd det direkt
+    # If traditional FAQ search found something, use it directly
     if traditional_result:
         await thinking_msg.edit(content="✅ Hittade svar i FAQ!")
         response = f"""**{traditional_result['question']}**
@@ -328,7 +346,8 @@ async def ask_question(ctx, *, question):
         await ctx.send(response)
         return
     
-    # 3. Om ingen traditionell match, försök AI-sökning
+    # If no traditional match, try AI search
+    await thinking_msg.edit(content="🔍 Söker med AI...")
     ai_result, is_ai_match = await ai_search_faq(question, faq_data)
     if ai_result:
         await thinking_msg.edit(content="✅ Hittade svar med AI!")
@@ -340,8 +359,8 @@ async def ask_question(ctx, *, question):
         await ctx.send(response)
         return
     
-    # 4. Om ingen FAQ-match, generera AI-svar (med kurs-fokus)
-    await thinking_msg.edit(content="🧠 Genererar AI-svar...")
+    # If no FAQ match, generate AI answer (with course focus)
+    await thinking_msg.edit(content="🧠 Genererar intelligent svar...")
     ai_answer = await generate_ai_answer(question, faq_data)
     if ai_answer:
         await thinking_msg.edit(content="✅ AI-svar genererat!")
@@ -355,6 +374,44 @@ async def ask_question(ctx, *, question):
         await thinking_msg.edit(content="❌ Kunde inte hitta svar")
         await ctx.send("Tyvärr kunde jag inte hitta något svar på din fråga. Försök omformulera eller använd `!help` för att se tillgängliga kommandon.")
 
-# Kör bot
+# Event handler for all messages - NATURAL CONVERSATIONS
+@bot.event
+async def on_message(message):
+    # Ignore messages from the bot itself
+    if message.author == bot.user:
+        return
+    
+    # Preserve command functionality
+    await bot.process_commands(message)
+    
+    # If the message is already a command (starts with prefix), ignore
+    if message.content.startswith(config.COMMAND_PREFIX):
+        return
+    
+    # Check if the message is a question based on content or formatting
+    question_indicators = ['?', 'vad', 'hur', 'varför', 'när', 'vilken', 'vem', 'vilket', 'berätta', 'förklara', 'what', 'how', 'why', 'when', 'which', 'who', 'explain']
+    
+    is_question = False
+    content = message.content.lower()
+    
+    # Check if the message ends with '?'
+    if content.endswith('?'):
+        is_question = True
+    
+    # Check if the message starts with a question word
+    for indicator in question_indicators:
+        if content.startswith(indicator):
+            is_question = True
+            break
+    
+    # If it's a question, treat it as !fråga
+    if is_question:
+        # If the message is short, run direct response with thinking indicator
+        if len(content) < 100:  # Max 100 characters for direct response
+            # Simulate the question command with the same content
+            ctx = await bot.get_context(message)
+            await ask_question(ctx, question=content)
+
+# Run bot
 if __name__ == "__main__":
     bot.run(config.BOT_TOKEN)
