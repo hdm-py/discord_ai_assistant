@@ -69,6 +69,20 @@
       "keywords": ["assignment", "deadline", "inlämning", "jupiter", "notebook"],
       "question": "När är deadlines för assignments?",
       "answer": "**Assignment-1 (Perceptron OCR):** 4 maj 22:00\n**Assignment-2 (Multi-agenter):** 7 maj 22:00, redovisning 8/6\n**VG-uppgift:** 22 maj 22:00\n**Projekt:** 24 maj 22:00\nRegler: Jupyter notebooks ska vara exekverbara, inga errors, lämna in både .ipynb och PDF."
+    },
+    {
+      "id": 11,
+      "category": "verktyg",
+      "keywords": ["cursor", "cursor.com", "ai-kod", "kodeditor"],
+      "question": "Vad är Cursor och varför ska jag använda det?",
+      "answer": "Cursor är en AI-driven kodeditor som hjälper med programmering."
+    },
+    {
+      "id": 12,
+      "category": "verktyg",
+      "keywords": ["colab", "google colab", "gpu", "notebooks"],
+      "question": "Vad är Google Colab?",
+      "answer": "Google Colab är en molnbaserad notebook-miljö med gratis GPU-tillgång."
     }
   ]
 }

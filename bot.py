@@ -160,168 +160,8 @@ Answer:"""
         print(f"AI answer generation failed: {e}")
         return None
 
-# Create bot instance
-intents = discord.Intents.default()
-intents.message_content = True
-
-bot = commands.Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
-
-# When bot starts
-@bot.event
-async def on_ready():
-    print(f'{bot.user} is now online!')
-    
-    # Test Ollama connection
-    try:
-        test_response = ollama.generate(
-            model='llama3:latest',
-            prompt="Test",
-            stream=False
-        )
-        print("✅ Ollama works!")
-    except Exception as e:
-        print(f"❌ Ollama error: {e}")
-    
-    # Send welcome message to the first channel the bot can write in
-    for guild in bot.guilds:
-        for channel in guild.text_channels:
-            if channel.permissions_for(guild.me).send_messages:
-                welcome_message = f"""🤖 **AI Kursassistent är nu online!**
-
-Hej! Jag hjälper er med frågor om AI-kursen.
-
-**✨ Nu med AI-stöd via Ollama! ✨**
-*Fokuserad på kurs-relaterade frågor*
-
-**Skriv `!help` för att se alla kommandon eller ställ frågor direkt!**
-
-Låt oss börja! 🚀"""
-                await channel.send(welcome_message)
-                break
-        break
-
-bot.remove_command('help')
-
-# Help command
-@bot.command(name='help')
-async def help_command(ctx):
-    faq_data = load_faq()
-    total_questions = len(faq_data['faq'])
-    
-    help_text = f"""🤖 **AI Kursassistent - Hjälp**
-
-**Grundläggande kommandon:**
-- `!hello` - Hälsning från boten
-- `!deadline` - Information om projektdeadline  
-- `!help` - Visa denna hjälp
-- `!info` - Information om boten
-- `!ai-status` - Kontrollera AI-status
-
-**Frågor:**
-- Ställ frågor direkt! (t.ex. "Vad är CNN?")
-- `!betyg` - Info om VG/G krav
-
-**✨ AI-förbättringar:**
-- Intelligent matchning av frågor
-- AI-genererade svar för kurs-relaterade frågor
-- Semantisk förståelse av svenska och engelska
-- Strikt fokus på AI/ML-kursen
-- Smart hantering av jämförande frågor
-
-**Exempel på frågor:**
-`Vad är CNN?`, `När är deadline?`, `Vad är PyTorch?`
-`Hur fungerar transformers?`, `Vad är skillnaden mellan bias och varians?`
-
-Totalt {total_questions} frågor tillgängliga för fakta, AI svarar på allt annat!
-
-*Jag svarar bara på frågor relaterade till AI/ML-kursen.*"""
-    await ctx.send(help_text)
-
-# Info command
-@bot.command(name='info')
-async def info_command(ctx):
-    faq_data = load_faq()
-    info_text = f"""ℹ️ **Om AI Kursassistent**
-
-Jag är en Discord-bot som hjälper studenter med AI-kursen!
-
-**Status:**
-- Kunskapsbas: {len(faq_data['faq'])} frågor och svar
-- AI-motor: Ollama (lokal AI)
-
-**Vad kan jag hjälpa till med?**
-- Kursinformation och deadlines
-- AI-begrepp och tekniker  
-- Verktyg som Cursor och Colab
-- Projektidéer och uppgifter
-- Intelligent svar på kurs-relaterade frågor
-- Jämförelser mellan olika AI-koncept
-
-**Teknisk fördjupning:**
-- Lokal AI-integration med Ollama
-- Semantisk sökning och matchning
-- Multi-level svarsgenerering
-- Smart detektering av komplexa frågor
-- Strikt scope-begränsning till kursmaterial
-
-**Begränsningar:**
-- Svarar ENDAST på AI/ML-kurs relaterade frågor
-- Hänvisar andra frågor till lämpliga kanaler
-
-Använd `!help` för att se alla kommandon!"""
-    await ctx.send(info_text)
-
-# AI-status command
-@bot.command(name='ai-status')
-async def ai_status(ctx):
-    try:
-        test_response = ollama.generate(
-            model='llama3:latest',
-            prompt="Test connection",
-            stream=False
-        )
-        await ctx.send("✅ Ollama AI fungerar! Model: llama3:latest")
-    except Exception as e:
-        await ctx.send(f"❌ Ollama AI ej tillgänglig: {e}")
-
-# Hello command
-@bot.command(name='hello')
-async def hello(ctx):
-    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖\n✨ Nu förstärkt med lokal AI via Ollama!\n🎯 Jag hjälper dig med AI/ML-kursen.\n💬 Du kan ställa frågor direkt utan kommandon!')
-
-# Deadline command
-@bot.command(name='deadline')
-async def deadline(ctx):
-    faq_data = load_faq()
-    for item in faq_data['faq']:
-        if item['id'] == 1:  # Deadline question
-            response = f"""**{item['question']}**
-
-{item['answer']}
-
-*Kategori: {item['category'].replace('-', ' ').title()}*"""
-            await ctx.send(response)
-            return
-    await ctx.send("Deadline-information ej tillgänglig.")
-
-# Grade command
-@bot.command(name='betyg')
-async def betyg(ctx):
-    faq_data = load_faq()
-    for item in faq_data['faq']:
-        if item['id'] == 2:  # Grade question
-            response = f"""**{item['question']}**
-
-{item['answer']}
-
-*Kategori: {item['category'].replace('-', ' ').title()}*"""
-            await ctx.send(response)
-            return
-    await ctx.send("Betygsinformation ej tillgänglig.")
-
-# Updated question command with AI - FIXED LOGIC and COMPLEX QUESTIONS
-@bot.command(name='fråga')
-async def ask_question(ctx, *, question):
+# Process question function (used for any question regardless of how it starts)
+async def process_question(ctx, question):
     # Show that the bot is "thinking"
     thinking_msg = await ctx.send("🤔 Tänker... (analyserar fråga)")
     
@@ -356,7 +196,7 @@ async def ask_question(ctx, *, question):
         return
     
     # If no FAQ match, generate AI answer (with course focus)
-    await thinking_msg.edit(content="🧠 Genererar AI-svar...")
+    await thinking_msg.edit(content="🧠 Genererar intelligent svar...")
     ai_answer = await generate_ai_answer(question, faq_data)
     if ai_answer:
         await thinking_msg.edit(content="✅ AI-svar genererat!")
@@ -370,43 +210,197 @@ async def ask_question(ctx, *, question):
         await thinking_msg.edit(content="❌ Kunde inte hitta svar")
         await ctx.send("Tyvärr kunde jag inte hitta något svar på din fråga. Försök omformulera eller använd `!help` för att se tillgängliga kommandon.")
 
-# Event handler for all messages - NATURAL CONVERSATIONS
+# Create bot instance
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
+
+# When bot starts
+@bot.event
+async def on_ready():
+    print(f'{bot.user} is now online!')
+    
+    # Test Ollama connection
+    try:
+        test_response = ollama.generate(
+            model='llama3:latest',
+            prompt="Test",
+            stream=False
+        )
+        print("✅ Ollama works!")
+    except Exception as e:
+        print(f"❌ Ollama error: {e}")
+    
+    # Send welcome message to the first channel the bot can write in
+    for guild in bot.guilds:
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                welcome_message = f"""🤖 **AI Kursassistent är nu online!**
+
+Hej! Jag hjälper er med frågor om AI-kursen.
+
+**✨ Nu med AI-stöd via Ollama! ✨**
+*Fokuserad på kurs-relaterade frågor*
+
+**Enkla kommandon:**
+• `!help` - Se alla kommandon
+
+Låt oss börja! 🚀"""
+                await channel.send(welcome_message)
+                break
+        break
+
+bot.remove_command('help')
+
+# Help command
+@bot.command(name='help')
+async def help_command(ctx):
+    faq_data = load_faq()
+    total_questions = len(faq_data['faq'])
+    
+    help_text = f"""🤖 **AI Kursassistent - Hjälp**
+
+**System-kommandon:**
+• `!help` - Visa denna hjälp
+• `!info` - Information om boten
+• `!deadline` - Projektdeadline
+• `!betyg` - VG/G krav
+• `!ai-status` - Kolla Ollama-anslutning
+• `!hello` - Hälsning
+
+**Ställ frågor direkt:**
+• `!vad är CNN?`
+• `!när är deadline?`
+• `!vad är PyTorch?`
+• `!hur fungerar transformers?`
+• `!vad är skillnaden mellan bias och varians?`
+
+**✨ AI:**
+• AI-genererade svar för kurs-relaterade frågor
+• Strikt fokus på AI/ML-kursen
+
+Totalt {total_questions} frågor tillgängliga för fakta, AI svarar på allt annat!
+
+*Jag svarar bara på frågor relaterade till AI/ML-kursen.*"""
+    await ctx.send(help_text)
+
+# Info command
+@bot.command(name='info')
+async def info_command(ctx):
+    faq_data = load_faq()
+    info_text = f"""ℹ️ **Om AI Kursassistent**
+
+Jag är en Discord-bot som hjälper studenter med AI-kursen!
+
+**Status:**
+• Kunskapsbas: {len(faq_data['faq'])} frågor och svar
+• AI-motor: Ollama
+• Utvecklad för: ML-1 kurs 2025
+
+**Vad kan jag hjälpa till med?**
+• Kursinformation och deadlines
+• AI-begrepp och tekniker  
+• Verktyg som Cursor och Colab
+• Projektidéer och uppgifter
+• Intelligent svar på kurs-relaterade frågor
+• Jämförelser mellan olika AI-koncept
+
+**Teknisk fördjupning:**
+• Lokal AI-integration med Ollama
+• Semantisk sökning och matchning
+• Multi-level svarsgenerering
+• Smart detektering av komplexa frågor
+• Strikt scope-begränsning till kursmaterial
+
+**Interaktionsmodell:**
+• Direkta frågor: `!vad är CNN?`
+• System-kommandon: `!help`, `!info`
+• Tillåter normala konversationer utan avbrott
+
+Använd `!help` för att se alla kommandon!"""
+    await ctx.send(info_text)
+
+# AI-status command
+@bot.command(name='ai-status')
+async def ai_status(ctx):
+    try:
+        test_response = ollama.generate(
+            model='llama3:latest',
+            prompt="Test connection",
+            stream=False
+        )
+        await ctx.send("✅ Ollama AI fungerar! Model: llama3")
+    except Exception as e:
+        await ctx.send(f"❌ Ollama AI ej tillgänglig: {e}")
+
+# Hello command
+@bot.command(name='hello')
+async def hello(ctx):
+    await ctx.send(f'Hej {ctx.author.mention}! Jag är din AI-kursassistent! 🤖\n✨ Förstärkt med lokal AI via Ollama!\n🎯 Jag hjälper dig med AI/ML-kursen.\n💡 Ställ frågor direkt: `!vad är CNN?` eller `!när är deadline?`')
+
+# Deadline command
+@bot.command(name='deadline')
+async def deadline(ctx):
+    faq_data = load_faq()
+    for item in faq_data['faq']:
+        if item['id'] == 1:  # Deadline question
+            response = f"""**{item['question']}**
+
+{item['answer']}
+
+*Kategori: {item['category'].replace('-', ' ').title()}*"""
+            await ctx.send(response)
+            return
+    await ctx.send("Deadline-information ej tillgänglig.")
+
+# Grade command
+@bot.command(name='betyg')
+async def betyg(ctx):
+    faq_data = load_faq()
+    for item in faq_data['faq']:
+        if item['id'] == 2:  # Grade question
+            response = f"""**{item['question']}**
+
+{item['answer']}
+
+*Kategori: {item['category'].replace('-', ' ').title()}*"""
+            await ctx.send(response)
+            return
+    await ctx.send("Betygsinformation ej tillgänglig.")
+
+# Event handler for direct questions - handles messages starting with ! that aren't existing commands
 @bot.event
 async def on_message(message):
     # Ignore messages from the bot itself
     if message.author == bot.user:
         return
     
-    # Preserve command functionality
+    # Process existing commands first
     await bot.process_commands(message)
     
-    # If the message is already a command (starts with prefix), ignore
+    # Check if message starts with our prefix but isn't a recognized command
     if message.content.startswith(config.COMMAND_PREFIX):
-        return
-    
-    # Check if the message is a question based on content or formatting
-    question_indicators = ['?', 'vad', 'hur', 'varför', 'när', 'vilken', 'vem', 'vilket', 'berätta', 'förklara', 'what', 'how', 'why', 'when', 'which', 'who', 'explain']
-    
-    is_question = False
-    content = message.content.lower()
-    
-    # Check if the message ends with '?'
-    if content.endswith('?'):
-        is_question = True
-    
-    # Check if the message starts with a question word
-    for indicator in question_indicators:
-        if content.startswith(indicator):
-            is_question = True
-            break
-    
-    # If it's a question, treat it as !fråga
-    if is_question:
-        # If the message is short, run direct response with thinking indicator
-        if len(content) < 100:  # Max 100 characters for direct response
-            # Simulate the question command with the same content
-            ctx = await bot.get_context(message)
-            await ask_question(ctx, question=content)
+        # Get the part after the prefix
+        question_part = message.content[len(config.COMMAND_PREFIX):].strip()
+        
+        # List of existing commands to avoid conflicts
+        existing_commands = ['help', 'info', 'deadline', 'betyg', 'ai-status', 'hello']
+        
+        # Check if it's not an existing command and looks like a question
+        if question_part and not any(question_part.lower().startswith(cmd) for cmd in existing_commands):
+            # Check if it looks like a question (contains question words or ends with ?)
+            question_indicators = ['vad', 'hur', 'varför', 'när', 'vilken', 'vem', 'vilket', 'berätta', 'förklara', 'what', 'how', 'why', 'when', 'which', 'who', 'explain']
+            
+            is_question = (
+                question_part.endswith('?') or 
+                any(question_part.lower().startswith(indicator) for indicator in question_indicators)
+            )
+            
+            if is_question:
+                # Create a context and process as a question
+                ctx = await bot.get_context(message)
+                await process_question(ctx, question_part)
 
 # Run bot
 if __name__ == "__main__":
