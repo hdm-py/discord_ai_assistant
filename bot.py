@@ -240,11 +240,12 @@ async def on_ready():
 
 Hej! Jag hjälper er med frågor om AI-kursen.
 
-**✨ Nu med AI-stöd via Ollama! ✨**
+**✨ AI-stöd via Ollama! ✨**
 *Fokuserad på kurs-relaterade frågor*
 
 **Enkla kommandon:**
 • `!help` - Se alla kommandon
+• `!vad är CNN?` - Ställ frågor direkt
 
 Låt oss börja! 🚀"""
                 await channel.send(welcome_message)
@@ -252,6 +253,34 @@ Låt oss börja! 🚀"""
         break
 
 bot.remove_command('help')
+
+# Error handler to suppress CommandNotFound errors for direct questions
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        # Check if the failed command looks like a question
+        message_content = ctx.message.content
+        if message_content.startswith(config.COMMAND_PREFIX):
+            question_part = message_content[len(config.COMMAND_PREFIX):].strip()
+            
+            # Check if it looks like a question
+            question_indicators = ['vad', 'hur', 'varför', 'när', 'vilken', 'vem', 'vilket', 'berätta', 'förklara', 'what', 'how', 'why', 'when', 'which', 'who', 'explain']
+            
+            is_question = (
+                question_part.endswith('?') or 
+                any(question_part.lower().startswith(indicator) for indicator in question_indicators)
+            )
+            
+            if is_question:
+                # Process as a direct question
+                await process_question(ctx, question_part)
+                return
+        
+        # If it's not a question, ignore the error silently
+        return
+    
+    # For other errors, you might want to log them or handle them differently
+    print(f"Command error: {error}")
 
 # Help command
 @bot.command(name='help')
@@ -295,7 +324,7 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 
 **Status:**
 • Kunskapsbas: {len(faq_data['faq'])} frågor och svar
-• AI-motor: Ollama
+• AI: Ollama
 • Utvecklad för: ML-1 kurs 2025
 
 **Vad kan jag hjälpa till med?**
@@ -309,7 +338,6 @@ Jag är en Discord-bot som hjälper studenter med AI-kursen!
 **Teknisk fördjupning:**
 • Lokal AI-integration med Ollama
 • Semantisk sökning och matchning
-• Multi-level svarsgenerering
 • Smart detektering av komplexa frågor
 • Strikt scope-begränsning till kursmaterial
 
@@ -369,38 +397,15 @@ async def betyg(ctx):
             return
     await ctx.send("Betygsinformation ej tillgänglig.")
 
-# Event handler for direct questions - handles messages starting with ! that aren't existing commands
+# Event handler for messages
 @bot.event
 async def on_message(message):
     # Ignore messages from the bot itself
     if message.author == bot.user:
         return
     
-    # Process existing commands first
+    # Process commands (this will trigger on_command_error for non-existent commands)
     await bot.process_commands(message)
-    
-    # Check if message starts with our prefix but isn't a recognized command
-    if message.content.startswith(config.COMMAND_PREFIX):
-        # Get the part after the prefix
-        question_part = message.content[len(config.COMMAND_PREFIX):].strip()
-        
-        # List of existing commands to avoid conflicts
-        existing_commands = ['help', 'info', 'deadline', 'betyg', 'ai-status', 'hello']
-        
-        # Check if it's not an existing command and looks like a question
-        if question_part and not any(question_part.lower().startswith(cmd) for cmd in existing_commands):
-            # Check if it looks like a question (contains question words or ends with ?)
-            question_indicators = ['vad', 'hur', 'varför', 'när', 'vilken', 'vem', 'vilket', 'berätta', 'förklara', 'what', 'how', 'why', 'when', 'which', 'who', 'explain']
-            
-            is_question = (
-                question_part.endswith('?') or 
-                any(question_part.lower().startswith(indicator) for indicator in question_indicators)
-            )
-            
-            if is_question:
-                # Create a context and process as a question
-                ctx = await bot.get_context(message)
-                await process_question(ctx, question_part)
 
 # Run bot
 if __name__ == "__main__":
