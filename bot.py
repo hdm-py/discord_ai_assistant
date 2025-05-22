@@ -37,17 +37,17 @@ def search_faq(query, faq_data):
         for keyword in item['keywords']:
             keyword_lower = keyword.lower().strip()
             
-            # 1. Exact match (highest priority)
+            # Exact match (highest priority)
             if keyword_lower == query:
                 exact_matches.append((item, 3))  # Score: 3
                 break
             
-            # 2. Query is in keyword (good match)
+            # Query is in keyword (good match)
             elif query in keyword_lower and len(query) >= 2:
                 good_matches.append((item, 2))  # Score: 2
                 break
             
-            # 3. Keyword is in query (weaker match)
+            # Keyword is in query (weaker match)
             elif keyword_lower in query and len(keyword_lower) >= 3:
                 # Extra check: avoid short keywords in long queries
                 if len(keyword_lower) <= 2 and len(query) > 5:
@@ -168,7 +168,6 @@ async def process_question(ctx, question):
     faq_data = load_faq()
     
     # Improved traditional FAQ search first
-    # (Now automatically skips complex/comparative questions)
     traditional_result = search_faq(question, faq_data)
     
     # If traditional FAQ search found something, use it directly
