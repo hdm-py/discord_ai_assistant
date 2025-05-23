@@ -24,9 +24,9 @@
     {
       "id": 4,
       "category": "kurs-info",
-      "keywords": ["lektioner", "schema", "l1", "l2", "l3", "l4", "l5"],
+      "keywords": ["lektioner", "schema", "l1", "l2", "l3", "l4", "l5", "kursdatum", "när", "start", "slut"],
       "question": "Vilka lektioner ingår i kursen?",
-      "answer": "**L1:** Intro, målsättning, planering\n**L2:** Matriser, 3D-gaming, Perceptroner\n**L3:** Calculus, Backprop\n**L4:** Assignment-1, Convolution, CNN\n**L5:** Transformers & LLM"
+      "answer": "**Kursperiod:** 31 mars - 30 maj 2025\n\n**L1 (31 mars):** Intro, målsättning, planering\n**L2:** Matriser, 3D-gaming, Perceptroner\n**L3:** Calculus, Backprop\n**L4:** Assignment-1, Convolution, CNN\n**L5 (30 maj):** Transformers & LLM (sista lektionen)"
     },
     {
       "id": 5,
@@ -72,17 +72,17 @@
     },
     {
       "id": 11,
-      "category": "verktyg",
-      "keywords": ["cursor", "cursor.com", "ai-kod", "kodeditor"],
-      "question": "Vad är Cursor och varför ska jag använda det?",
-      "answer": "Cursor är en AI-driven kodeditor som hjälper med programmering."
+      "category": "kurs-info",
+      "keywords": ["lektioner", "schema", "kursdatum", "när", "start", "slut"],
+      "question": "När började kursen?",
+      "answer": "**Kursperiod:** 31 mars 2025**"
     },
     {
       "id": 12,
-      "category": "verktyg",
-      "keywords": ["colab", "google colab", "gpu", "notebooks"],
-      "question": "Vad är Google Colab?",
-      "answer": "Google Colab är en molnbaserad notebook-miljö med gratis GPU-tillgång."
+      "category": "kurs-info",
+      "keywords": ["lektioner", "schema", "kursdatum", "när", "start", "slut"],
+      "question": "När slutar kursen?",
+      "answer": "**Kursperiod:** 30 maj 2025**"
     }
   ]
 }
