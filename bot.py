@@ -24,7 +24,7 @@ async def generate_ai_answer(query, faq_data):
         ])
         
         # Enhanced prompt with more context and clearer instructions
-        prompt = f"""Du är en intelligent AI-kursassistent för en AI/ML-kurs på svenska. Du ska ALLTID ge ett hjälpsamt svar.
+        prompt = f"""Du är en intelligent AI-kursassistent för en AI/ML-kurs på svenska. Du pratar med en student som har frågor om AI/ML. Du ska ALLTID ge ett hjälpsamt svar.
 
 FULL KURSINFORMATION:
 {knowledge_base}
@@ -161,8 +161,7 @@ async def help_command(ctx):
     help_text = f"""🤖 **AI Kursassistent - Hjälp**
 
 **Ställ VILKEN fråga som helst om AI/ML:**
-• `!vad är cursor?`
-• `!jag skulle vilja veta mer om en ai förstärkt ide`
+• `!vad är PyTorch?`
 • `!förklara deep learning för nybörjare`
 • `!vad är skillnaden mellan CNN och RNN?`
 • `!hur fungerar transformers?`
@@ -187,7 +186,7 @@ async def info_command(ctx):
     info_text = f"""ℹ️ **AI Kursassistent Info**
 
 **Förmågor:**
-• Svarar på ALLA frågor om AI/ML
+• Svarar på alla frågor om AI/ML
 • Använder både kurs-specifik FAQ-data och allmän AI-kunskap
 • Förklarar tekniska koncept pedagogiskt
 • Svarar alltid på svenska
@@ -218,7 +217,7 @@ async def ai_status(ctx):
 # Hello command
 @bot.command(name='hello')
 async def hello(ctx):
-    await ctx.send(f'Hej {ctx.author.mention}! 🤖\n\n✨ Jag är din AI-kursassistent!\n🧠 Ställ VILKEN fråga som helst om AI/ML\n💡 Exempel: `!vad är cursor?` eller `!jag skulle vilja veta mer om transformers`')
+    await ctx.send(f'Hej {ctx.author.mention}! 🤖\n\n✨ Jag är din AI-kursassistent!\n🧠 Ställ vilken fråga som helst om AI/ML')
 
 # Quick FAQ commands - these now also use the AI system
 @bot.command(name='deadline')
